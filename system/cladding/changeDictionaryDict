@@ -1,0 +1,77 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.2                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dictionaryReplacement
+{
+    boundary
+    {
+	// Na malha celula.msh, o cladding não tem parede mais
+//        parede
+//        {
+//	    type            symmetry;
+            // type            fixedValue;
+            // value           uniform 0;
+//        }
+	
+	extremos
+        {
+            type            zeroGradient;
+	    //	    value           uniform 300;
+        }
+
+    }
+
+    T
+    {
+        internalField   uniform 300;
+
+        boundaryField
+        {
+            ".*"
+            {
+                type            zeroGradient;
+	    }
+            
+//	    parede
+//	    {
+//		type            symmetry;
+//	    }
+	    
+	    cladding_to_coolant
+            {
+                type            compressible::turbulentTemperatureCoupledBaffleMixed;
+                Tnbr            T;
+                kappa           solidThermo;
+                kappaName       none;
+		value           uniform 300;
+	    }
+
+	    cladding_to_fuel
+            {
+                type            compressible::turbulentTemperatureCoupledBaffleMixed;
+                Tnbr            T;
+                kappa           solidThermo;
+                kappaName       none;
+		//thicknessLayers (0.001);
+		//kappaLayers     (1);
+                value           uniform 300;
+            }
+        }
+    }
+
+}
+
+// ************************************************************************* //

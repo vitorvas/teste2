@@ -1,0 +1,95 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.2                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dictionaryReplacement
+{
+    boundary
+    {
+	// Na malha celula.msh o fuel não tem
+	// mais paredes. Comentado.
+//        parede
+//        {
+//	    type            symmetry;
+            // type            fixedValue;
+            // value           uniform 0;
+//        }
+
+       extremos
+       {
+            type            zeroGradient;
+	    //	    value           uniform 300;
+       }
+    }
+
+    T
+    {
+        internalField   uniform 300;
+	// Temperatura inicial igual para todos
+
+        boundaryField
+        {
+            ".*"
+            {
+	        type            zeroGradient; 
+            }
+
+//	    parede
+//	    {
+//		type            symmetry;
+//	    }
+
+	    //            "fuel_to_.*"
+	    fuel_to_cladding
+            {
+                type            compressible::turbulentTemperatureCoupledBaffleMixed;
+                Tnbr            T;
+                kappa           solidThermo;
+                kappaName       none;
+		//		thicknessLayers (0.001);
+		//		kappaLayers     (1);
+                value           uniform 300;
+            }
+        }
+    }
+
+    Q
+    {
+      //      internalField   uniform 1.138E+07; //900.0; //443.56; //4000; //38888888.9;
+	// 250kW * combustível B1 (mais quente) 1.55 do total *1/4 do combustível
+	// = 0.96875 kW -> 968.75 W
+	// volume do fuel -> r = 
+	// = 0.000354 [m^3]
+	// Q = 
+
+        boundaryField
+        {
+            ".*"
+            {
+	        type            calculated; 
+            }
+
+//	    parede
+//	    {
+//		type            symmetry;
+//	    }
+
+        }
+    }
+
+
+}
+
+// ************************************************************************* //

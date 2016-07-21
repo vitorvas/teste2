@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       polynomial;
+    thermo          hPolynomial; 
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+
+mixture
+{
+    specie
+    {
+        nMoles      1;
+        molWeight   26.982;
+    }
+
+    transport
+    {
+      Tlow   293;
+      Thigh    873;
+      Tcommon    575;
+	//  kappa(t) = 223.7 - 4.7560e-2*(t) + 1.0215e-5*(t)**2 - 18887e-08*(t)**3   pg 17 Triga c3
+      kappaCoeffs (223.7 -4.7560e-02 1.0215e-05 -1.8887e-08 0 0 0 0);
+
+    }
+
+    thermodynamics
+    {
+      // CpAl1100(T) = 0.892 + 4.4361e-04*(T) + 3.6326e-08**(t)   pg18 Triga c3
+      Tlow   293;
+      Thigh    873;
+      Tcommon    575;
+      CpCoeffs (0.892 4.4361e-04 3.6326e-08 0 0 0 0 0);
+      // Hf      0;
+      // Sf      0;
+    }
+
+    equationOfState
+    {
+        rho     2.705e-03;
+    }
+}
+
+// ************************************************************************* //
